@@ -38,7 +38,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | Email | Password |
 |---|---|
 | demo@example.com | password123 |
-| jane@example.com | password123 |
 
 ## Project structure
 
