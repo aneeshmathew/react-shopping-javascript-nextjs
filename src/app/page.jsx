@@ -3,7 +3,7 @@ import ProductsView from "@/components/server/product/ProductsView";
 
 export default async function HomePage({ searchParams }) {
   const { category } = await searchParams;
-  const categories = await getCategories();
+  const categories = await getCategories().catch(() => []);
 
   return <ProductsView categories={categories} category={category} />;
 }

@@ -2,7 +2,23 @@ import { getProducts } from "@/components/server/api/products";
 import ProductCard from "./ProductCard";
 
 export default async function ProductList({ category }) {
-  const products = await getProducts(category);
+  let products = [];
+  let hasError = false;
+
+  try {
+    products = await getProducts(category);
+  } catch (err) {
+    console.error("ProductList: failed to fetch products", err);
+    hasError = true;
+  }
+
+  if (hasError) {
+    return (
+      <div className="text-center py-20 text-gray-500">
+        We couldn&apos;t load products right now. Please try again in a moment.
+      </div>
+    );
+  }
 
   if (products.length === 0) {
     return (
