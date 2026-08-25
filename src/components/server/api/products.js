@@ -5,7 +5,10 @@ export async function getProducts(category) {
     ? `${BASE_URL}/products/category/${encodeURIComponent(category)}`
     : `${BASE_URL}/products`;
 
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  const res = await fetch(url, {
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(10000),
+  });
   if (!res.ok) throw new Error("Failed to fetch products");
   return res.json();
 }
