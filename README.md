@@ -35,6 +35,7 @@ Create a `.env.local` file in the project root:
 
 ```env
 AUTH_SECRET=your-secret-key-min-32-chars
+//generate one with npx auth secret or openssl rand -base64 32
 ```
 
 ### 3. Run the development server
