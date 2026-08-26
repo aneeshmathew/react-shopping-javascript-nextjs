@@ -56,26 +56,41 @@ export default function ProductFilters({
   return (
     <div className="flex flex-wrap items-end gap-4">
       <div>
-        <label className="block text-xs font-medium text-gray-400 mb-1">
+        <label className="block text-xs font-medium text-slate-500 mb-1">
           Category
         </label>
-        <select
-          value={selectedCategory ?? ""}
-          onChange={handleCategoryChange}
-          className="px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-w-[180px]"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {formatCategoryLabel(cat)}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            value={selectedCategory ?? ""}
+            onChange={handleCategoryChange}
+            className="h-11 appearance-none pl-3 pr-9 rounded-xl border border-slate-700 bg-slate-900 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-w-[180px]"
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {formatCategoryLabel(cat)}
+              </option>
+            ))}
+          </select>
+          <svg
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
       </div>
 
       <form onSubmit={handlePriceSubmit} className="flex items-end gap-2">
         <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1">
+          <label className="block text-xs font-medium text-slate-500 mb-1">
             Min price
           </label>
           <input
@@ -85,11 +100,11 @@ export default function ProductFilters({
             value={minPriceInput}
             onChange={(e) => setMinPriceInput(e.target.value)}
             placeholder="$0"
-            className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="h-11 w-24 px-3 rounded-xl border border-slate-700 bg-slate-900 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1">
+          <label className="block text-xs font-medium text-slate-500 mb-1">
             Max price
           </label>
           <input
@@ -99,19 +114,19 @@ export default function ProductFilters({
             value={maxPriceInput}
             onChange={(e) => setMaxPriceInput(e.target.value)}
             placeholder="Any"
-            className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="h-11 w-24 px-3 rounded-xl border border-slate-700 bg-slate-900 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
         <button
           type="submit"
-          className="px-4 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium text-gray-600 hover:border-indigo-300 hover:text-indigo-600 transition-colors"
+          className="h-11 px-4 rounded-xl bg-slate-900 border border-slate-700 text-sm font-medium text-slate-300 hover:border-indigo-500/60 hover:text-indigo-400 transition-colors"
         >
           Apply
         </button>
       </form>
 
       <div>
-        <label className="block text-xs font-medium text-gray-400 mb-1">
+        <label className="block text-xs font-medium text-slate-500 mb-1">
           Rating
         </label>
         <div className="flex gap-1.5">
@@ -120,13 +135,13 @@ export default function ProductFilters({
               key={rating}
               type="button"
               onClick={() => handleRatingClick(rating)}
-              className={`flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium border transition-colors ${
+              className={`h-11 flex items-center gap-1 px-3 rounded-xl text-sm font-medium border transition-colors ${
                 String(minRating) === String(rating)
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
+                  ? "bg-indigo-500 text-white border-indigo-500"
+                  : "bg-slate-900 text-slate-300 border-slate-700 hover:border-indigo-500/60 hover:text-indigo-400"
               }`}
             >
-              <span className="text-yellow-400">★</span>
+              <span className={String(minRating) === String(rating) ? "text-yellow-300" : "text-yellow-400"}>★</span>
               {rating}+
             </button>
           ))}
@@ -137,7 +152,7 @@ export default function ProductFilters({
         <button
           type="button"
           onClick={clearAll}
-          className="px-3 py-2 text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2 transition-colors"
+          className="h-11 px-3 text-sm text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors"
         >
           Clear all filters
         </button>

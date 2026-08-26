@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geist.variable} antialiased bg-gray-50 min-h-screen`}>
+      <body className={`${geist.variable} antialiased min-h-screen`}>
         <AppProviders>
           <NavBar />
           <main>{children}</main>

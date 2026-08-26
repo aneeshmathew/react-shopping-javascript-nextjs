@@ -16,7 +16,7 @@ export default function ProductsView({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-1">
+          <h1 className="text-3xl font-bold text-white mb-1">
             {q ? (
               <>Results for &ldquo;{q}&rdquo;</>
             ) : category ? (
@@ -25,7 +25,7 @@ export default function ProductsView({
               "All Products"
             )}
           </h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-slate-400 text-sm">
             Discover our curated collection of products
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function ProductsView({
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl border border-gray-100 h-80 animate-pulse"
+                className="bg-slate-900 rounded-2xl border border-slate-800 h-80 animate-pulse"
               />
             ))}
           </div>
