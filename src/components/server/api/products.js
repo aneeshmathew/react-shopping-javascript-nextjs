@@ -1,8 +1,10 @@
-// Platzi Fake Store API (docs: https://fakeapi.platzi.com, live host below).
-// Swapped in after fakestoreapi.com turned out to be behind a Cloudflare bot
-// challenge that blocks Vercel's server-side requests (returns a "Just a
-// moment..." HTML page instead of JSON).
-const BASE_URL = "https://api.escuelajs.co/api/v1";
+// DummyJSON (docs: https://dummyjson.com/docs/products). Swapped in after
+// fakestoreapi.com blocked Vercel behind a Cloudflare challenge, and Platzi's
+// Fake Store API turned out to be a shared, publicly-writable dataset full of
+// years of other developers' test/junk products and categories.
+// DummyJSON's write endpoints are simulated only (nothing is ever persisted
+// to the shared dataset), so its catalog stays clean.
+const BASE_URL = "https://dummyjson.com";
 
 const DEFAULT_HEADERS = {
   "User-Agent":
@@ -27,49 +29,34 @@ async function apiFetch(path, { revalidate } = {}) {
   return res.json();
 }
 
-// Platzi's seed data occasionally stores an image entry as a
-// JSON-stringified array or with stray quotes/brackets
-// (e.g. `["https://picsum.photos/..."]` as a literal string). Pull the
-// first real-looking URL out of whatever we got back.
-function sanitizeImageUrl(raw) {
-  if (!raw) return null;
-  const match = String(raw).match(/https?:\/\/[^\s"'\]]+/);
-  return match ? match[0] : null;
-}
-
-// Deterministic, purely cosmetic "rating" derived from the product id —
-// Platzi's API doesn't provide ratings at all, and the existing
-// ProductCard/ProductDetail UI expects product.rating.rate/.count.
-function fakeRating(id) {
-  const seed = Number(id) || 0;
-  const rate = Math.round((3.5 + ((seed * 37) % 15) / 10) * 10) / 10; // 3.5–5.0
-  const count = 10 + ((seed * 53) % 490); // 10–499
-  return { rate: Math.min(rate, 5), count };
-}
+// Turns a category slug like "home-decoration" into "Home Decoration" for
+// display, while the slug itself keeps being used for filtering/URLs.
+export { formatCategoryLabel } from "@/lib/formatCategoryLabel";
 
 function normalizeProduct(p) {
-  const image =
-    sanitizeImageUrl(p.images?.[0]) ||
-    sanitizeImageUrl(p.category?.image) ||
-    "https://placehold.co/600x400";
-
   return {
     id: p.id,
     title: p.title,
     price: p.price,
     description: p.description,
-    category: p.category?.slug ?? "others",
-    image,
-    rating: fakeRating(p.id),
+    category: p.category,
+    image: p.thumbnail || p.images?.[0] || "https://placehold.co/600x400",
+    rating: {
+      rate:
+        typeof p.rating === "number"
+          ? Math.round(p.rating * 10) / 10
+          : (p.rating?.rate ?? 4.5),
+      count: Array.isArray(p.reviews) ? p.reviews.length : 0,
+    },
   };
 }
 
 export async function getProducts(category) {
   const path = category
-    ? `/products?categorySlug=${encodeURIComponent(category)}`
-    : "/products";
+    ? `/products/category/${encodeURIComponent(category)}?limit=100`
+    : "/products?limit=100";
   const data = await apiFetch(path, { revalidate: 3600 });
-  return data.map(normalizeProduct);
+  return (data.products ?? []).map(normalizeProduct);
 }
 
 export async function getProduct(id) {
@@ -78,6 +65,8 @@ export async function getProduct(id) {
 }
 
 export async function getCategories() {
-  const data = await apiFetch("/categories", { revalidate: 86400 });
-  return data.map((c) => c.slug);
+  const data = await apiFetch("/products/categories", { revalidate: 86400 });
+  // DummyJSON has returned either plain slug strings or {slug, name, url}
+  // objects depending on version — handle both.
+  return data.map((c) => (typeof c === "string" ? c : c.slug));
 }

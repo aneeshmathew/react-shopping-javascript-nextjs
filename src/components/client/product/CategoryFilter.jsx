@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { formatCategoryLabel } from "@/lib/formatCategoryLabel";
 
 export default function CategoryFilter({ categories, selected }) {
   const router = useRouter();
@@ -29,13 +30,13 @@ export default function CategoryFilter({ categories, selected }) {
         <button
           key={cat}
           onClick={() => handleChange(cat)}
-          className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors border ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
             selected === cat
               ? "bg-indigo-600 text-white border-indigo-600"
               : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
           }`}
         >
-          {cat}
+          {formatCategoryLabel(cat)}
         </button>
       ))}
     </div>

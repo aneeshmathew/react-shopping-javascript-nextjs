@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import AddToCartButton from "@/components/client/cart/AddToCartButton";
+import { formatCategoryLabel } from "@/lib/formatCategoryLabel";
 
 export default function ProductDetail({ product }) {
   const stars = Math.round(product.rating.rate);
@@ -43,8 +44,8 @@ export default function ProductDetail({ product }) {
           </div>
 
           <div className="p-8 md:p-10 flex flex-col">
-            <span className="inline-block text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full mb-3 capitalize w-fit">
-              {product.category}
+            <span className="inline-block text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full mb-3 w-fit">
+              {formatCategoryLabel(product.category)}
             </span>
 
             <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-4">

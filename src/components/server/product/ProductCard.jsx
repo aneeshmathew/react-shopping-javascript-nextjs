@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import AddToCartButton from "@/components/client/cart/AddToCartButton";
+import { formatCategoryLabel } from "@/lib/formatCategoryLabel";
 
 export default function ProductCard({ product }) {
   return (
@@ -15,8 +16,8 @@ export default function ProductCard({ product }) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
         </div>
-        <span className="inline-block text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full mb-2 capitalize">
-          {product.category}
+        <span className="inline-block text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full mb-2">
+          {formatCategoryLabel(product.category)}
         </span>
         <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-2">
           {product.title}
