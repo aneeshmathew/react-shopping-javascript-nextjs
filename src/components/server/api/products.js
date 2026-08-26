@@ -51,12 +51,41 @@ function normalizeProduct(p) {
   };
 }
 
-export async function getProducts(category) {
-  const path = category
-    ? `/products/category/${encodeURIComponent(category)}?limit=100`
-    : "/products?limit=100";
-  const data = await apiFetch(path, { revalidate: 3600 });
-  return (data.products ?? []).map(normalizeProduct);
+export async function getProducts({
+  category,
+  q,
+  minPrice,
+  maxPrice,
+  minRating,
+} = {}) {
+  // DummyJSON's search endpoint doesn't accept a category filter, and the
+  // category endpoint doesn't accept a search term — so when a text query is
+  // present we search first (it's the more restrictive filter) and narrow to
+  // the category client-side; otherwise we fetch by category directly.
+  const path = q
+    ? `/products/search?q=${encodeURIComponent(q)}&limit=0`
+    : category
+      ? `/products/category/${encodeURIComponent(category)}?limit=0`
+      : "/products?limit=0";
+
+  // Search results shouldn't be cached the way the general catalog is —
+  // every distinct query would otherwise get its own cache entry forever.
+  const data = await apiFetch(path, { revalidate: q ? undefined : 3600 });
+  let products = (data.products ?? []).map(normalizeProduct);
+
+  if (q && category) {
+    products = products.filter((p) => p.category === category);
+  }
+  if (typeof minPrice === "number" && !Number.isNaN(minPrice)) {
+    products = products.filter((p) => p.price >= minPrice);
+  }
+  if (typeof maxPrice === "number" && !Number.isNaN(maxPrice)) {
+    products = products.filter((p) => p.price <= maxPrice);
+  }
+  if (typeof minRating === "number" && !Number.isNaN(minRating)) {
+    products = products.filter((p) => p.rating.rate >= minRating);
+  }
+  return products;
 }
 
 export async function getProduct(id) {

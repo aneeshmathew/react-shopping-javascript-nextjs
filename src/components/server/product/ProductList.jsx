@@ -1,12 +1,30 @@
 import { getProducts } from "@/components/server/api/products";
 import ProductCard from "./ProductCard";
 
-export default async function ProductList({ category }) {
+function toNumber(value) {
+  if (value === undefined || value === null || value === "") return undefined;
+  const n = Number(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
+export default async function ProductList({
+  category,
+  q,
+  minPrice,
+  maxPrice,
+  minRating,
+}) {
   let products = [];
   let hasError = false;
 
   try {
-    products = await getProducts(category);
+    products = await getProducts({
+      category,
+      q,
+      minPrice: toNumber(minPrice),
+      maxPrice: toNumber(maxPrice),
+      minRating: toNumber(minRating),
+    });
   } catch (err) {
     console.error("ProductList: failed to fetch products", err);
     hasError = true;
@@ -23,7 +41,7 @@ export default async function ProductList({ category }) {
   if (products.length === 0) {
     return (
       <div className="text-center py-20 text-gray-500">
-        No products found in this category.
+        No products match your filters.
       </div>
     );
   }

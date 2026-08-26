@@ -1,26 +1,46 @@
 import { Suspense } from "react";
 import ProductList from "./ProductList";
-import CategoryFilter from "@/components/client/product/CategoryFilter";
+import ProductFilters from "@/components/client/product/ProductFilters";
+import SearchBar from "@/components/client/product/SearchBar";
+import { formatCategoryLabel } from "@/lib/formatCategoryLabel";
 
-export default function ProductsView({ categories, category }) {
+export default function ProductsView({
+  categories,
+  category,
+  q,
+  minPrice,
+  maxPrice,
+  minRating,
+}) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-1">
-          {category ? (
-            <span className="capitalize">{category}</span>
-          ) : (
-            "All Products"
-          )}
-        </h1>
-        <p className="text-gray-500 text-sm">
-          Discover our curated collection of products
-        </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold mb-1">
+            {q ? (
+              <>Results for &ldquo;{q}&rdquo;</>
+            ) : category ? (
+              formatCategoryLabel(category)
+            ) : (
+              "All Products"
+            )}
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Discover our curated collection of products
+          </p>
+        </div>
+        <SearchBar initialQuery={q ?? ""} />
       </div>
 
       <div className="mb-8">
         <Suspense fallback={null}>
-          <CategoryFilter categories={categories} selected={category} />
+          <ProductFilters
+            categories={categories}
+            selectedCategory={category}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            minRating={minRating}
+          />
         </Suspense>
       </div>
 
@@ -36,7 +56,13 @@ export default function ProductsView({ categories, category }) {
           </div>
         }
       >
-        <ProductList category={category} />
+        <ProductList
+          category={category}
+          q={q}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          minRating={minRating}
+        />
       </Suspense>
     </div>
   );
